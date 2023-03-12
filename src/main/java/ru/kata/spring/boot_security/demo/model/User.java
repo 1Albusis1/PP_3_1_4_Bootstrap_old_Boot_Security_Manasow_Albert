@@ -1,44 +1,44 @@
 package ru.kata.spring.boot_security.demo.model;
 
+
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
-    @Size(min = 2, message = "Поле должно создержать не менее 2 знаков")
+    @Size(min = 2, message = "min 2 symbols")
     private String name;
     @Column(name = "surname")
-    @Size(min = 2, message = "Поле должно создержать не менее 2 знаков")
+    @Size(min = 2, message = "min 2 symbols")
     private String surname;
     @Column(name = "username")
-    @Size(min = 2, message = "Поле должно создержать не менее 2 знаков")
+    @Size(min = 2, message = "min 2 symbols")
     private String username;
     @Column(name = "password")
-    @Size(min = 2, message = "Поле должно создержать не менее 2 знаков")
+    @Size(min = 2, message = "min 2 symbols")
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "users_role",
-                joinColumns = @JoinColumn(name = "user_id"),
-                inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     public User() {
     }
 
-    public User(String name, String surname, String username, String password, Set<Role> roles) {
+    public User(String name, String surname, String username, String password, Collection<Role> roles) {
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -71,17 +71,35 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+    public String getUsername() {
+        return username;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
+    }
+
+
     @Override
-    public String getUsername() {
-        return username;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
     }
 
     @Override
@@ -104,51 +122,5 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(String[] roles) {
-        Set<Role> roleSet = new HashSet<>();
-        for (String role : roles) {
-            if (role != null) {
-                if (role.equals("ROLE_ADMIN")) {
-                    roleSet.add(new Role(1L, role));
-                }
-                if (role.equals("ROLE_USER")) {
-                    roleSet.add(new Role(2L, role));
-                }
-            }
-            this.roles = roleSet;
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(surname, user.surname) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, surname, username, password, roles);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
 }
