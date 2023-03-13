@@ -22,6 +22,7 @@ public class UserController {
 
     @GetMapping(value = "")
     public String showProfile(Model model, Principal principal) {
+        System.out.println("////GetMapping//////////////////////showProfile///");
         model.addAttribute("user", userService.findByUsername(principal.getName()));
         return "user-profile";
     }

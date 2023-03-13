@@ -22,12 +22,14 @@ public class AdminController {
 
     @GetMapping("")
     public String ShowAllUsers(Model model) {
+        System.out.println("///GetMapping///ShowAllUsers///");
         model.addAttribute("users", userService.findAll());
         return "user-list";
     }
 
     @GetMapping("/user-create")
     public String createUserForm(User user, Model model) {
+        System.out.println("/GetMapping////////////////////////createUserForm////");
         model.addAttribute("user", user);
         model.addAttribute("roles", roleService.findAll());
         return "user-create";
@@ -35,12 +37,14 @@ public class AdminController {
 
     @PostMapping("/user-create")
     public String createUser(User user) {
+        System.out.println("/PostMapping/////////////////////////createUser///");
         userService.save(user);
         return "redirect:/admin";
     }
 
     @GetMapping("/user-update/{id}")
     public String updateUserForm(@PathVariable("id") Long id, Model model) {
+        System.out.println("///GetMapping//////////////////////updateUserForm////");
         model.addAttribute("user", userService.findById(id));
         model.addAttribute("roles", roleService.findAll());
         return "user-update";
@@ -48,12 +52,14 @@ public class AdminController {
 
     @PatchMapping("/user-update")
     public String updateUser(@ModelAttribute("user") User user) {
+        System.out.println("///PatchMapping///////////////////////updateUser///");
         userService.save(user);
         return "redirect:/admin";
     }
 
     @DeleteMapping("/user-delete/{id}")
     public String deleteUser(@PathVariable("id") Long id) {
+        System.out.println("///DeleteMapping///////////////////////deleteUser///");
         userService.deleteById(id);
         return "redirect:/admin";
     }
