@@ -7,7 +7,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
     List<User> findAll();
 
     void save(User user);
@@ -17,5 +17,4 @@ public interface UserService extends UserDetailsService {
     User findById(Long id);
     User findByUsername(String username);
 
-    UserDetails loadUserByUsername(String username);
 }
