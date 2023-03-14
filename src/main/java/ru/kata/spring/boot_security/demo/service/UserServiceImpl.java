@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +47,13 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         return userDao.findByUsername(username);
     }
-
+    @Override
+    public void update(long id, User userForUpdate) {
+        if (!findById(id).getPassword().equals(userForUpdate.getPassword())) {
+            userForUpdate.setPassword(new BCryptPasswordEncoder().encode(userForUpdate.getPassword()));
+        }
+        userDao.saveAndFlush(userForUpdate);
+    }
 
 }
 
